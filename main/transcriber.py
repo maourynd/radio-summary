@@ -118,7 +118,6 @@ def transcribe(db):
             transcription_data = json.loads(obj['Body'].read())
             transcripts = transcription_data.get("results", {}).get("transcripts", [])
             transcription_text = transcripts[0]["transcript"] if transcripts else ""
-            print("Transcription: " + transcription_text)
 
             # Move the original audio file to the archive location
             archive_key = f"{S3_GLUED_ARCHIVED_AUDIO_PATH}{filename}"
@@ -131,8 +130,6 @@ def transcribe(db):
 
             # Update the audio_url to point to the archived location
             archived_audio_url = f"s3://{BUCKET_NAME}/{archive_key}"
-
-            print("THIS " + str(file_id))
 
             # Save record in DB with updated audio_url (archived location)
             t = Transcription(

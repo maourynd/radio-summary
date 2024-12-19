@@ -1,8 +1,6 @@
-import openai
-
-import execute
 from openai import OpenAI
 
+from config import OPENAI_API_KEY
 from context import PROMPT_TEXT
 
 
@@ -17,8 +15,7 @@ def get_gpt_response(summary: str) -> str:
         str: The response from GPT.
     """
     try:
-        client = OpenAI()
-        openai.api_key = Execute.get_env_variable("OPENAI_API_KEY")
+        client = OpenAI(api_key=OPENAI_API_KEY)
 
         # Make the API request to OpenAI
         response = client.chat.completions.create(
@@ -31,7 +28,6 @@ def get_gpt_response(summary: str) -> str:
 
         # Extract the response content
         gpt_response = response.choices[0].message.content
-        print(f"GPT Response: {gpt_response}")
         return gpt_response
 
     except Exception as e:

@@ -1,9 +1,12 @@
 import logging
 
-from main import generate_document, gpt
+from main.generate_document import render_html
+from main.gpt import get_gpt_response
 from main.helpers.s3 import s3_helper
 from main.models.summary import Summary
 from main.models.transcription import Transcription
+from main.send_email import send_email_via_mailchimp
+
 
 def upload_transcription_text(text):
     try:
@@ -43,7 +46,7 @@ def summarize(db):
     # 5. GPT the summary
     gpt_result = call_gpt_and_check(transcribed_text)
     if gpt_result["status"] == "success":
-        print("GPT Success:", gpt_result["response"])
+        print("Successfully GPT'd daily summary!")
     else:
         print("GPT Error:", gpt_result["message"])
         return {
@@ -66,17 +69,20 @@ def summarize(db):
     # 8. Update each transcription to mark them as summarized
     for t in transcriptions:
         try:
-            t.summarized = True
+            #t.summarized = True
             t.summary_id = summary.id
             t.save(db)
         except Exception as e:
             logging.error(f"Failed to save transcription {t.file_id}: {e}")
 
     # 9. Generate HTML File for Summary
-    html_file = GenerateDocument.generate_html_document(summarized_text)
+    html_file = render_html(summarized_text)
 
     # 10. Upload HTML file to s3
     s3_helper.upload_html_to_s3(html_file)
+
+    # 11. Send to Mailchimp
+    send_email_via_mailchimp(html_file)
 
     return summary
 
@@ -95,7 +101,7 @@ def call_gpt_and_check(transcribed_text: str) -> dict:
     try:
 
         # Call the `get_gpt_response` function
-        response = Gpt.get_gpt_response(transcribed_text)
+        response = get_gpt_response(transcribed_text)
 
         # Check for error in the response
         if response.startswith("Error:"):

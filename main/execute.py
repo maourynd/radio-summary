@@ -1,12 +1,16 @@
 import os
 import time
+from datetime import datetime
 
+import pytz
 import schedule
 from dotenv import load_dotenv
 
 from sqlalchemy.orm import declarative_base
+
 from main.gluer import glue
 from main.login_and_scrape import run_broadcastify_job
+from main.summarizer import summarize
 from main.transcriber import transcribe
 from main.db.database import Database
 from main.helpers.s3 import s3_helper
@@ -61,25 +65,32 @@ def startup():
 def main():
 
     db = startup()
+
+    # Wipe DB for testing if needed
     #wipe_database(db)
-    #db.close()
 
 
-    # iterate scrape-age
+    # Scrape
     execute(db)
     schedule.every(5).minutes.do(execute, db)
-    #schedule.every(6).hours.do(summarize)
 
-    #summarize
-    #transcribe(db)
-    #summarize(db)
-    #db.close()
+    #summarize and email at 7:30AM every day
+    schedule_summarizer_task(7, 30, db)
 
     while True:
         schedule.run_pending()
         time.sleep(1)
 
 
+def schedule_summarizer_task(hour, minute, db):
+    def wrapper():
+        est = pytz.timezone('US/Eastern')
+        now = datetime.now(est)
+        print(f"Executing task at {now}")
+        summarize(db)
+
+    # Schedule the function at the specific time in EST
+    schedule.every().day.at(f"{hour:02d}:{minute:02d}").do(wrapper)
 
 # scrapes, glues, and transcribes
 def execute(db):
