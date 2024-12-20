@@ -66,6 +66,8 @@ def main():
 
     db = startup()
 
+    #summarize(db)
+
     # Wipe DB for testing if needed
     #wipe_database(db)
 

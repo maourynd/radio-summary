@@ -37,7 +37,7 @@ def send_email_via_mailchimp(html_content):
                 "list_id": MAILCHIMP_RECIPIENT_LIST_ID
             },
             "settings": {
-                "subject_line": "Herndon Police Chatter: Daily Summary Report",
+                "subject_line": "Herndon Police Chatter: " + yesterday_str + " Summary Report",
                 "preview_text": "Catch up on the daily police activities in Herndon.",
                 "title": "Herndon Police Chatter: " + yesterday_str,
                 "from_name": "Herndon Police Chatter",
