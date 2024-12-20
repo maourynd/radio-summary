@@ -14,8 +14,6 @@ def send_email_via_mailchimp(html_content):
             "api_key": MAILCHIMP_API_KEY,
             "server": MAILCHIMP_SERVER
         })
-        response = client.ping.get()
-        print(response)
     except ApiClientError as error:
         print(error)
 
@@ -41,8 +39,8 @@ def send_email_via_mailchimp(html_content):
                 "preview_text": "Catch up on the daily police activities in Herndon.",
                 "title": "Herndon Police Chatter: " + yesterday_str,
                 "from_name": "Herndon Police Chatter",
-                "reply_to": "maourybusiness@gmail.com",
-                "from_email": "maourybusiness@gmail.com"
+                "reply_to": "herndonvapolicechatter@gmail.com",
+                "from_email": "herndonvapolicechatter@gmail.com"
             }
         })
 
