@@ -137,7 +137,7 @@ def transcribe(db):
                 data=transcription_data,
                 transcription=transcription_text,
                 summarized=False,
-                audio_url=archived_audio_url,        # Updated to archived location
+                audio_url=archived_audio_url,
                 transcribe_url=transcription_uri,
                 summary_id = None
             )

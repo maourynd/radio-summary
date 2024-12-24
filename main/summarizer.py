@@ -69,7 +69,7 @@ def summarize(db):
     # 8. Update each transcription to mark them as summarized
     for t in transcriptions:
         try:
-            #t.summarized = True
+            t.summarized = True
             t.summary_id = summary.id
             t.save(db)
         except Exception as e:

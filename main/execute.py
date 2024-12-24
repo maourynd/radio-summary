@@ -71,12 +71,11 @@ def main():
     # Wipe DB for testing if needed
     #wipe_database(db)
 
-
-    # Scrape
+    # Execution Code
     execute(db)
     schedule.every(5).minutes.do(execute, db)
 
-    #summarize and email at 7:30AM every day
+    # summarize and email at 7:30AM every day
     schedule_summarizer_task(7, 30, db)
 
     while True:
